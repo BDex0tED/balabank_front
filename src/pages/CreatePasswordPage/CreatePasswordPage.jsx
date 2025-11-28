@@ -1,8 +1,9 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext.jsx";
-import api from "../../api.js";
-import styles from '../Style.module.css';
+// 👇 Важно: импортируем BASE_URL
+import api, { BASE_URL } from "../../api.js";
+import styles from "../Style.module.css";
 
 function CreatePasswordPage() {
     const { registerData } = useContext(AuthContext);
@@ -22,7 +23,6 @@ function CreatePasswordPage() {
 
         if (password !== repeatPassword) {
             setError("Пароли не совпадают!");
-            console.log("Пароли не совпадают!");
             setIsLoading(false);
             return;
         }
@@ -37,6 +37,7 @@ function CreatePasswordPage() {
             role: registerData.role,
         };
 
+        // 1. Регистрация
         const registerRes = await api("/auth/register", "POST", registrationPayload);
 
         if (registerRes.detail) {
@@ -45,32 +46,42 @@ function CreatePasswordPage() {
             return;
         }
 
+        // 2. Логин (получение токена)
         const formData = new URLSearchParams();
         formData.append("username", registerData.phone_number);
         formData.append("password", password);
 
-        const loginRes = await fetch("http://localhost:8000/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: formData.toString(),
-        }).then((r) => r.json());
+        try {
+            // 👇 ИСПРАВЛЕНО: используем BASE_URL вместо localhost
+            const loginRes = await fetch(`${BASE_URL}/auth/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: formData.toString(),
+            }).then((r) => r.json());
 
-        if (!loginRes.access_token) {
-            setError(loginRes.detail || "Ошибка входа. Проверьте сервер.");
+            if (!loginRes.access_token) {
+                setError(loginRes.detail || "Ошибка входа. Проверьте сервер.");
+                setIsLoading(false);
+                return;
+            }
+
+            localStorage.setItem("token", loginRes.access_token);
+
+            // 3. Получение пользователя
+            const me = await api("/users/me", "GET");
+
             setIsLoading(false);
-            return;
+
+            if (me.role === "parent") navigate("/parent");
+            else navigate("/child");
+
+        } catch (err) {
+            console.error(err);
+            setError("Ошибка сети. Попробуйте позже.");
+            setIsLoading(false);
         }
-
-        localStorage.setItem("token", loginRes.access_token);
-
-        const me = await api("/users/me", "GET");
-
-        setIsLoading(false);
-
-        if (me.role === "parent") navigate("/parent");
-        else navigate("/child");
     }
 
     return (

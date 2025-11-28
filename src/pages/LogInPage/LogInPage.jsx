@@ -1,8 +1,10 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext.jsx";
-import api from "../../api.js";
-import style from '../Style.module.css';
+// 👇 Импортируем BASE_URL
+import api, { BASE_URL } from "../../api.js";
+// 👇 Исправил 'style' на 'styles'
+import styles from '../Style.module.css';
 
 function LogInPage() {
     const { setRegisterData } = useContext(AuthContext);
@@ -25,49 +27,53 @@ function LogInPage() {
         formData.append("username", cleanedPhone);
         formData.append("password", password);
 
-        // 1. ЛОГИН (ПОЛУЧЕНИЕ ТОКЕНА)
-        const loginRes = await fetch("http://localhost:8000/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: formData.toString(),
-        }).then((r) => r.json());
+        try {
+            // 1. ЛОГИН (Используем BASE_URL)
+            const loginRes = await fetch(`${BASE_URL}/auth/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: formData.toString(),
+            }).then((r) => r.json());
 
-        if (!loginRes.access_token) {
-            setError(loginRes.detail || "Неверный телефон или пароль");
-            setIsLoading(false);
-            return;
-        }
-
-        localStorage.setItem("token", loginRes.access_token);
-
-        // 2. ПОЛУЧЕНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЯ (ВКЛЮЧАЯ РОЛЬ)
-        const me = await api("/users/me", "GET");
-
-        if (!me || me.detail || !me.role) { // 💡 Добавил проверку на наличие me.role
-            setError("Ошибка получения профиля или роли пользователя");
-            setIsLoading(false);
-            return;
-        }
-
-        // 3. ПОЛНОЕ ОБНОВЛЕНИЕ КОНТЕКСТА (setRegisterData полностью перезаписывает state)
-        setRegisterData(me); 
-
-        setIsLoading(false);
-
-        // 4. НАВИГАЦИЯ (с небольшой задержкой для гарантии обновления state)
-        // 💡 Используем таймаут 0мс, чтобы убедиться, что состояние контекста
-        // успеет обновиться до навигации (предотвращает чтение старой роли)
-        setTimeout(() => {
-            const userRole = me.role || 'child'; // Защита на случай пустого поля
-
-            if (userRole === "parent") {
-                navigate("/parent");
-            } else {
-                navigate("/child");
+            if (!loginRes.access_token) {
+                setError(loginRes.detail || "Неверный телефон или пароль");
+                setIsLoading(false);
+                return;
             }
-        }, 0); 
+
+            localStorage.setItem("token", loginRes.access_token);
+
+            // 2. ПОЛУЧЕНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЯ
+            const me = await api("/users/me", "GET");
+
+            if (!me || me.detail || !me.role) {
+                setError("Ошибка получения профиля или роли пользователя");
+                setIsLoading(false);
+                return;
+            }
+
+            // 3. ОБНОВЛЕНИЕ КОНТЕКСТА
+            setRegisterData(me); 
+
+            setIsLoading(false);
+
+            // 4. НАВИГАЦИЯ
+            setTimeout(() => {
+                const userRole = me.role || 'child'; 
+                if (userRole === "parent") {
+                    navigate("/parent");
+                } else {
+                    navigate("/child");
+                }
+            }, 0); 
+            
+        } catch (err) {
+            console.error(err);
+            setError("Ошибка сети. Попробуйте позже.");
+            setIsLoading(false);
+        }
     }
 
     return (

@@ -1,5 +1,7 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext.jsx";
+// 👇 1. Импортируем BASE_URL
+import { BASE_URL } from "../../api.js"; 
 import style from '../Style.module.css';
 import Header from '../../components/Header/Header';
 import Navigation from '../../components/Navigation/Navigation';
@@ -33,7 +35,8 @@ function ChatPage() {
         try {
             const endpoint = isParent ? "/ask/parent" : "/ask/children";
 
-            const res = await fetch(`http://localhost:8000${endpoint}`, {
+            // 👇 2. ИСПРАВЛЕНО: Используем BASE_URL вместо localhost
+            const res = await fetch(`${BASE_URL}${endpoint}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
