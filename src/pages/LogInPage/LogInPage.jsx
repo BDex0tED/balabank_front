@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import api from "../../api.js";
-import styles from "../style.module.css";
+import style from '../Style.module.css';
 
 function LogInPage() {
     const { setRegisterData } = useContext(AuthContext);

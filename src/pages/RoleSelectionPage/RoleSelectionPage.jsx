@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext.jsx";
-import styles from '../style.module.css'; 
+import styles from '../Style.module.css';
 import child from '../../assets/child-icon.png'; 
 import parent from '../../assets/parent-icon.png'; 
 

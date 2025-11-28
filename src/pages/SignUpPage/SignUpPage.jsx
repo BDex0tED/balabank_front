@@ -2,7 +2,7 @@ import React from 'react';
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext.jsx";
-import styles from '../style.module.css';
+import styles from '../Style.module.css';
 
 function SignUpPage() {
     const { setRegisterData } = useContext(AuthContext);

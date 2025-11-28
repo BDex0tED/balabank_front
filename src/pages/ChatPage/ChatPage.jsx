@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext.jsx";
-import style from '../style.module.css';
+import style from '../Style.module.css';
 import Header from '../../components/Header/Header';
 import Navigation from '../../components/Navigation/Navigation';
 import parentProfileIcon from '../../assets/parent-profile-icon.jpg';

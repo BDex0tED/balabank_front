@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
-import styles from '../style.module.css';
+import styles from '../Style.module.css';
 import bapi from '../../assets/bapi.png';
 
 
