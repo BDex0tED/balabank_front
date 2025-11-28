@@ -47,6 +47,13 @@
     margin-bottom: 4px;
 }
 
+.linkTitle{
+    color: var(--text2-color);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+}
+
 .space100{
     height: 100px;
 }
@@ -197,7 +204,7 @@ input {
 }
 
 .chatContainer {
-    height: 75vh;
+    height: 72vh;
     flex-grow: 1; 
     padding: 20px 16px 0; 
     overflow-y: auto; 
@@ -224,7 +231,6 @@ input {
     word-wrap: break-word;
     font-size: 16px;
 }
-
 
 .otherMessage {
     align-self: flex-start;
@@ -266,4 +272,8 @@ input {
     height: 45px;
     position: absolute;
     right: 15px ;
+}
+
+.space5{
+    height: 5px;
 }

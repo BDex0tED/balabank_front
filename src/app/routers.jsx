@@ -4,8 +4,11 @@ import ChildHomePage from "../pages/ChildHomePage/ChildHomePage";
 import GreetingPage from "../pages/GreetingPage/GreetingPage";
 import RoleSelectionPage from "../pages/RoleSelectionPage/RoleSelectionPage";
 import SignUpPage from "../pages/SignUpPage/SignUpPage";
+import LogInPage from "../pages/LogInPage/LogInPage";
 import CreatePasswordPage from "../pages/CreatePasswordPage/CreatePasswordPage";
 import ChatPage from "../pages/ChatPage/ChatPage";
+import AutoPaymentPage from "../pages/AutoPaymentPage/AutoPaymentPage";
+import CreateTaskPage from "../pages/CreateTaskPage/CreateTaskPage";
 
 export const routers = createBrowserRouter([
   {
@@ -19,6 +22,10 @@ export const routers = createBrowserRouter([
   {
     path: "/registration",
     element: <SignUpPage />,
+  },
+  {
+    path: "/login",
+    element: <LogInPage />,
   },
   {
     path: "/registration/password",
@@ -35,5 +42,13 @@ export const routers = createBrowserRouter([
   {
     path: "/chat",
     element: <ChatPage />,
+  },
+  {
+    path: "/autopayment",
+    element: <AutoPaymentPage />,
+  },
+  {
+    path: "/createtask",
+    element: <CreateTaskPage />,
   },
 ]);

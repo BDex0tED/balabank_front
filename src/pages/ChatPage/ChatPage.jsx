@@ -12,9 +12,15 @@ function ChatPage() {
     const [chatMessages, setChatMessages] = useState([]); 
     const [inputText, setInputText] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const userName = registerData?.name || 'Имя';
 
-    const isParent = registerData.role === "parent";
+    const userName = registerData?.name || 'Имя';
+    
+    const userRole = registerData?.role || 'child';
+    const isParent = userRole === "parent";
+
+    const headerImg = isParent ? parentProfileIcon : childProfileIcon;
+
+    const headerContent = isParent ? '5000.70' : userName; 
 
     const handleSend = async () => {
         if (!inputText.trim()) return;
@@ -53,9 +59,9 @@ function ChatPage() {
     return (
         <div>
             <Header 
-                userType={registerData.role} 
-                img={!isParent ? childProfileIcon : parentProfileIcon}
-                content={!isParent ? userName : '5000.70'}
+                userType={userRole}
+                content={headerContent}
+                img={headerImg}
             />
 
             <div className={style.chatContainer}>

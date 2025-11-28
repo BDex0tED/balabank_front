@@ -1,9 +1,11 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./BalanceCard.module.css";
 import token from "../../assets/token2.png"; 
 
 const BalanceCard = ({userType, amount, balance}) => {
     const isChild = userType === 'parent';
+    const navigate = useNavigate();
     return (
         <div className={styles.card}>
             <div className={styles.content}>
@@ -20,7 +22,7 @@ const BalanceCard = ({userType, amount, balance}) => {
                         <span className={styles.BigValue}>{amount}с</span>
                     </div>
                 </div>
-                <button className={`${styles.plusBtn} ${isChild ? '' : styles.hidden}`}>+</button> 
+                <button className={`${styles.plusBtn} ${isChild ? '' : styles.hidden}`} onClick={() => navigate('/autopayment')}>+</button> 
             </div>
             <div className={styles.balance}>
                 {isChild ? (

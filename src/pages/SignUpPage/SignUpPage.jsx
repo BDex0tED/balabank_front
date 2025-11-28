@@ -14,18 +14,19 @@ function SignUpPage() {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [age, setAge] = useState(18); 
 
+    const isPhoneValid = phoneNumber.length === 9;
     const isFormValid = name.trim() && surname.trim() && phoneNumber.trim() && age > 0;
 
     function handleSubmit() {
 
-        const cleanedPhoneNumber = phoneNumber.trim().replace(/\D/g, ''); 
+        if (!isPhoneValid) return;
 
         setRegisterData(prev => ({ 
             ...prev, 
             name: name.trim(),
             surname: surname.trim(),
             paternity: paternity.trim(), 
-            phone_number: cleanedPhoneNumber, 
+            phone_number: phoneNumber, 
             age: age, 
         }));
 
@@ -76,7 +77,12 @@ function SignUpPage() {
                         placeholder="+996 (XXX) XX-XX-XX" 
                         required 
                         value={phoneNumber} 
-                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        onChange={(e) => {
+                            const onlyNums = e.target.value.trim().replace(/\D/g, "");
+                            if (onlyNums.length <= 9) {
+                                setPhoneNumber(onlyNums);
+                            }
+                        }}
                     />
                 </div>
                 

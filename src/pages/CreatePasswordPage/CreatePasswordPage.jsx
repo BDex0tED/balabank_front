@@ -26,9 +26,6 @@ function CreatePasswordPage() {
             return;
         }
 
-        // -----------------------------------------
-        // 1️⃣ РЕГИСТРАЦИЯ (ТОЧНО ТЕ ПОЛЯ, ЧТО ТРЕБУЮТ!)
-        // -----------------------------------------
         const registrationPayload = {
             name: registerData.name,
             surname: registerData.surname,
@@ -36,6 +33,7 @@ function CreatePasswordPage() {
             phone_number: registerData.phone_number,
             age: registerData.age,
             password: password,
+            role: registerData.role,
         };
 
         const registerRes = await api("/auth/register", "POST", registrationPayload);
@@ -46,9 +44,6 @@ function CreatePasswordPage() {
             return;
         }
 
-        // -----------------------------------------
-        // 2️⃣ ВХОД (OAuth2 Username = phone_number)
-        // -----------------------------------------
         const formData = new URLSearchParams();
         formData.append("username", registerData.phone_number);
         formData.append("password", password);
@@ -69,14 +64,11 @@ function CreatePasswordPage() {
 
         localStorage.setItem("token", loginRes.access_token);
 
-        // -----------------------------------------
-        // 3️⃣ ПОЛУЧИТЬ ТЕКУЩЕГО ПОЛЬЗОВАТЕЛЯ
-        // -----------------------------------------
         const me = await api("/users/me", "GET");
 
         setIsLoading(false);
 
-        if (registerData.role === "parent") navigate("/parent");
+        if (me.role === "parent") navigate("/parent");
         else navigate("/child");
     }
 
@@ -117,6 +109,7 @@ function CreatePasswordPage() {
                         <label>Повторите пароль</label>
                         <input
                             type="password"
+                            placeholder="Повторите пароль"
                             required
                             value={repeatPassword}
                             onChange={(e) => setRepeatPassword(e.target.value)}

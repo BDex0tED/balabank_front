@@ -1,0 +1,178 @@
+.pageWrapper {
+    background-color: #f8f9fd;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.mainContainer {
+    padding: 0 20px;
+    margin-top: -10px;
+    position: relative;
+    z-index: 10;
+}
+
+.avatarSection {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.card {
+    background: #FFFFFF;
+    border: 2px solid #5D5FEF;
+    border-radius: 30px;
+    padding: 24px;
+    box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.05);
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    color: #000;
+}
+
+.subtitle {
+    font-size: 13px;
+    line-height: 1.4;
+    color: #666666;
+    margin-bottom: 24px;
+}
+
+.label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #000;
+}
+
+.amountSection {
+    margin-bottom: 24px;
+}
+
+.amountDisplay {
+    background-color: #E2E1FF; 
+    border-radius: 16px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.sliderWrapper {
+    position: relative;
+    padding: 5px 0;
+}
+
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px; 
+    background: transparent;
+    cursor: pointer;
+    outline: none;
+    margin: 10px 0;
+}
+
+.slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px; 
+    background: linear-gradient(
+        to right, 
+        #5D5FEF 0%, 
+        #5D5FEF var(--progress), 
+        #E0E0E0 var(--progress), 
+        #E0E0E0 100%
+    );
+    border-radius: 2px;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background: #5D5FEF; 
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.3);
+
+    margin-top: calc(4px/2 - 24px/2); 
+    
+    box-sizing: border-box;
+    transition: transform 0.1s;
+}
+
+.slider::-webkit-slider-thumb:active {
+    transform: scale(1.1);
+}
+
+.slider::-moz-range-track {
+    width: 100%;
+    height: 4px; 
+    background: linear-gradient(
+        to right, 
+        #5D5FEF 0%, 
+        #5D5FEF var(--progress), 
+        #E0E0E0 var(--progress), 
+        #E0E0E0 100%
+    );
+    border-radius: 2px;
+}
+
+.slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background: #5D5FEF;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.3);
+    box-sizing: border-box;
+}
+
+.sliderWrapper {
+    position: relative;
+    padding: 0; 
+}
+
+.slider::-moz-range-progress {
+    background-color: transparent;
+}
+
+.sliderLabels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #999;
+    font-weight: 500;
+}
+
+.frequencySection { margin-bottom: 24px; }
+.radioGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; column-gap: 8px; }
+.radioLabel { display: flex; align-items: center; cursor: pointer; font-size: 13px; color: #000; font-weight: 500; white-space: nowrap; }
+.radioLabel input { display: none; }
+.customRadio { width: 18px; height: 18px; min-width: 18px; border: 2px solid #C4C4C4; border-radius: 50%; margin-right: 8px; position: relative; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.radioLabel input:checked + .customRadio { border-color: #5D5FEF; background-color: #5D5FEF; }
+.radioLabel input:checked + .customRadio::after { content: ''; width: 8px; height: 8px; background: white; border-radius: 50%; }
+
+.calendarSection { margin-bottom: 30px; }
+.daysRow { display: flex; justify-content: space-between; align-items: center; }
+.dayItem { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 38px; height: 48px; border-radius: 12px; cursor: pointer; transition: background 0.2s; }
+.dayName { font-size: 12px; color: #999; margin-bottom: 4px; }
+.dayDate { font-size: 14px; font-weight: 700; color: #000; }
+.dayActive { background-color: #E2E1FF; }
+.dayActive .dayName { color: #5D5FEF; }
+.arrowIcon { display: flex; align-items: center; justify-content: center; padding-left: 5px; cursor: pointer; }
+.submitButton { width: 100%; background-color: #5D5FEF; color: white; border: none; border-radius: 16px; padding: 16px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0px 4px 15px rgba(93, 95, 239, 0.3); transition: background 0.2s; }
+.submitButton:active { background-color: #4b4dc7; transform: scale(0.98); }
+.spacer { height: 100px; }

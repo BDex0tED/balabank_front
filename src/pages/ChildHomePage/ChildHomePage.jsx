@@ -52,21 +52,21 @@ const tasksData = [
     { id: 3, text: 'Выбросить мусор', completed: true, icon: trashIcon, userType: 'child', amount: 50},
 ];
 
-function ParentHomePage() {
+function ChildHomePage() {
     const { registerData } = useContext(AuthContext);
     const userName = registerData?.name || 'Имя';
 
     return (
         <div>
             <Header 
-                userType='child'
+                userType={registerData?.role || 'child'}
                 content={userName}
                 img={childProfileIcon}
             />
             <div className={style.container}>
                 <AvatarList 
                     users={users}
-                    userType='child'
+                    userType={registerData?.role || 'child'}
                 />
                 <BalanceCard 
                     userType='child'
@@ -118,4 +118,4 @@ function ParentHomePage() {
     )
 }
 
-export default ParentHomePage
+export default ChildHomePage;

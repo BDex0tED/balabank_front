@@ -82,7 +82,8 @@ function ParentHomePage() {
                     />
                 </div>
                 <ChatBotBanner />
-                <p className={style.taskTitle}>Задания &gt;</p>
+                <a href='/createtask' className={style.linkTitle}>Задания &gt;</a>
+                <div className={style.space5}></div>
                 <div className={style.taskContainer}> 
                     {tasksData.map(task => (
                         <TaskItem
