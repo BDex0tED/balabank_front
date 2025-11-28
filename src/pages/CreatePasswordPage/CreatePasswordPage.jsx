@@ -22,6 +22,7 @@ function CreatePasswordPage() {
 
         if (password !== repeatPassword) {
             setError("Пароли не совпадают!");
+            console.log("Пароли не совпадают!");
             setIsLoading(false);
             return;
         }
