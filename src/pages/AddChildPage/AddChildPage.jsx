@@ -5,28 +5,26 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import styles from '../style.module.css';
 
-function SignUpPage() {
-    const { registerData, setRegisterData } = useContext(AuthContext);
+function AddChildPage() {
+    const { setRegisterData } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const [name, setName] = useState("");
     const [surname, setSurname] = useState("");
     const [paternity, setPaternity] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [age, setAge] = useState(18); 
-    const [familyName, setFamilyName] = useState("");
+    // Используем строку для номера телефона
+    const [phoneNumber, setPhoneNumber] = useState(""); 
+    // Используем числовой тип для возраста
+    const [age, setAge] = useState(15); 
 
-    const isPhoneValid = phoneNumber.length === 9;
-    const isFormValid =
-        name.trim() &&
-        surname.trim() &&
-        phoneNumber.trim() &&
-        age > 0 &&
-        (registerData.role !== "parent" || familyName.trim());
+    // Предполагая 9-значный формат телефона без кода страны
+    const isPhoneValid = phoneNumber.length === 9; 
+    const isFormValid = name.trim() && surname.trim() && phoneNumber.trim() && age > 0 && isPhoneValid;
 
     function handleSubmit() {
 
-        if (!isPhoneValid) return;
+        // Проверка уже включена в isFormValid, но оставим для явности
+        if (!isFormValid) return;
 
         setRegisterData(prev => ({ 
             ...prev, 
@@ -35,7 +33,8 @@ function SignUpPage() {
             paternity: paternity.trim(), 
             phone_number: phoneNumber, 
             age: age, 
-            family_name: registerData.role?.toUpperCase() === "PARENT" ? familyName.trim() : undefined,
+            role: 'child', // Сохраняем маленькими, преобразуем в заглавные в CreatePasswordPage
+            // Family_id НЕ сохраняем здесь, он берется из localStorage в CreatePasswordPage
         }));
 
         navigate("/registration/password");
@@ -54,7 +53,7 @@ function SignUpPage() {
                 }}
                 className={styles.card}
             >
-                <h1 className={styles.regTitle}>Регистрация</h1>
+                <h1 className={styles.regTitle}>Регистрация ребенка</h1>
 
                 <div className={styles.formGroup}>
                     <label>Имя</label>
@@ -92,9 +91,10 @@ function SignUpPage() {
                     <label>Номер телефона</label>
                     <input
                         type="tel"
-                        placeholder="+996 XXX-XXX-XXX"
+                        placeholder="XXX XXX XXX"
                         required
                         value={
+                            // Форматирование номера: 345 346 345 -> 345 346 345
                             phoneNumber
                                 .replace(/(\d{3})(\d{0,3})(\d{0,3})/, (_, a, b, c) =>
                                     [a, b, c].filter(Boolean).join(" ")
@@ -108,28 +108,26 @@ function SignUpPage() {
                             }
                         }}
                     />
+                     {!isPhoneValid && phoneNumber.length > 0 && <p style={{color: 'red', fontSize: '12px'}}>Неполный номер (нужно 9 цифр)</p>}
                 </div>
                 
                 <div className={styles.formGroup}>
                     <label>Возраст</label>
                     <input 
                         type="number" 
-                        placeholder="18" 
+                        placeholder="15" 
                         required 
                         min="1"
+                        max="15"
                         value={age} 
-                        onChange={(e) => setAge(parseInt(e.target.value))}
-                    />
-                </div>
-
-                <div className={styles.formGroup}>
-                    <label>Код семьи</label>
-                    <input 
-                        type="text"
-                        placeholder="Например: Аяновы"
-                        required
-                        value={familyName}
-                        onChange={(e) => setFamilyName(e.target.value)}
+                        onChange={(e) => {
+                            const val = parseInt(e.target.value);
+                            if (!isNaN(val) && val >= 1) {
+                                setAge(val);
+                            } else if (e.target.value === "") {
+                                setAge(""); // Позволяем очищать поле
+                            }
+                        }}
                     />
                 </div>
 
@@ -148,4 +146,4 @@ function SignUpPage() {
     )
 }
 
-export default SignUpPage;
+export default AddChildPage;

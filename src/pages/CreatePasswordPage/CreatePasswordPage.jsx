@@ -1,20 +1,25 @@
 import React, { useContext, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext.jsx";
+import { AuthContext } from "../../context/AuthContext.jsx"; // <-- Импорт контекста
 import api from "../../api.js";
 import styles from "../style.module.css";
 
 function CreatePasswordPage() {
-    const { registerData } = useContext(AuthContext);
+    // ✅ Получаем triggerFamilyUpdate из контекста
+    const { registerData, setRegisterData, triggerFamilyUpdate } = useContext(AuthContext); 
+
     const [password, setPassword] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+
     const navigate = useNavigate();
 
     const isContinueEnabled =
-        password.length >= 8 && password === repeatPassword && !isLoading;
+        password.length >= 4 && 
+        password === repeatPassword &&
+        !isLoading;
 
     async function handleCreate(e) {
         e.preventDefault();
@@ -27,17 +32,44 @@ function CreatePasswordPage() {
             return;
         }
 
-        const registrationPayload = {
-            name: registerData.name,
-            surname: registerData.surname,
-            paternity: registerData.paternity,
+        const roleToRegister = registerData.role?.toUpperCase();
+        let registerEndpoint = "";
+
+        // 🧩 1. Формирование Payload
+        let payload = {
             phone_number: registerData.phone_number,
-            age: registerData.age,
+            surname: registerData.surname,
+            name: registerData.name,
+            paternity: registerData.paternity || null,
             password: password,
-            role: registerData.role,
+            age: registerData.age,
         };
 
-        const registerRes = await api("/auth/register", "POST", registrationPayload);
+        // ----------------------------------------------------
+        // 👨‍👩‍👧 Логика для Родителя (Создание семьи: /auth/register)
+        // ----------------------------------------------------
+        if (roleToRegister === "PARENT") {
+            registerEndpoint = "/auth/register";
+            payload.role = roleToRegister;
+            payload.family_name = registerData.family_name;
+        } 
+        
+        // ----------------------------------------------------
+        // 👦 Логика для Ребенка (Добавление к семье: /families/add-child)
+        // ----------------------------------------------------
+        else if (roleToRegister === "CHILD") {
+            registerEndpoint = "/families/add-child";
+            delete payload.role;
+        } else {
+            setError("Ошибка: Неопределенная роль пользователя.");
+            setIsLoading(false);
+            return;
+        }
+
+        console.log(`Sending to endpoint: ${registerEndpoint}`, payload);
+
+        // 📌 2. SEND REGISTER REQUEST
+        const registerRes = await api(registerEndpoint, "POST", payload);
 
         if (registerRes.detail) {
             setError(`Ошибка регистрации: ${registerRes.detail}`);
@@ -45,44 +77,76 @@ function CreatePasswordPage() {
             return;
         }
 
+        // 📌 3. Save generated family_id from PARENT registration
+        if (roleToRegister === "PARENT" && registerRes.family_id) {
+            localStorage.setItem("family_id", registerRes.family_id);
+        }
+
+        // ----------------------------------------
+        // 👉 4. CHILD REGISTERED SUCCESSFULLY (Redirect PARENT to refresh)
+        // ----------------------------------------
+        if (roleToRegister === "CHILD") {
+            setRegisterData({}); 
+            setIsLoading(false);
+            
+            // ✅ ВЫЗЫВАЕМ ФУНКЦИЮ ОБНОВЛЕНИЯ ПЕРЕД НАВИГАЦИЕЙ
+            if (triggerFamilyUpdate) {
+                triggerFamilyUpdate();
+            }
+
+            navigate("/parent"); 
+            return;
+        }
+
+        // ----------------------------------------
+        // 👉 5. PARENT AUTO LOGIN
+        // ----------------------------------------
         const formData = new URLSearchParams();
-        formData.append("username", registerData.phone_number);
+        formData.append("username", payload.phone_number);
         formData.append("password", password);
 
+        // Вход через form-urlencoded, поэтому используем fetch
         const loginRes = await fetch("http://localhost:8000/auth/login", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: formData.toString(),
         }).then((r) => r.json());
 
         if (!loginRes.access_token) {
-            setError(loginRes.detail || "Ошибка входа. Проверьте сервер.");
+            setError(loginRes.detail || "Ошибка входа");
             setIsLoading(false);
             return;
         }
 
         localStorage.setItem("token", loginRes.access_token);
 
+        // Получаем роль, чтобы навигировать правильно
         const me = await api("/users/me", "GET");
 
         setIsLoading(false);
+        setRegisterData({});
 
-        if (me.role === "parent") navigate("/parent");
-        else navigate("/child");
+        // 💡 ФИНАЛЬНАЯ НАВИГАЦИЯ
+        if (me && me.role?.toUpperCase() === "PARENT") {
+            navigate("/parent");
+        } else if (me && me.role?.toUpperCase() === "CHILD") {
+            navigate("/child");
+        } else {
+            console.error("Роль пользователя не определена.", me);
+            navigate("/login"); 
+        }
     }
 
     return (
         <div className={styles.wrapper}>
-            <motion.div 
+            <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ 
+                transition={{
                     type: "spring",
                     stiffness: 150,
                     damping: 15,
-                    duration: 0.4
+                    duration: 0.4,
                 }}
                 className={styles.card}
             >
@@ -91,24 +155,18 @@ function CreatePasswordPage() {
                 {error && (
                     <div
                         className={styles.errorMessage}
-                        style={{
-                            color: "red",
-                            marginBottom: "10px",
-                            textAlign: "center",
-                        }}
+                        style={{ color: "red", marginBottom: "10px", textAlign: "center" }}
                     >
                         {error}
                     </div>
                 )}
 
                 <form onSubmit={handleCreate}>
-                    <input type="hidden" value={registerData.phone_number} />
-
                     <div className={styles.formGroup}>
                         <label>Пароль</label>
                         <input
                             type="password"
-                            placeholder="Минимум 8 символов"
+                            placeholder="Минимум 4 символа"
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -128,11 +186,7 @@ function CreatePasswordPage() {
                         />
                     </div>
 
-                    <button
-                        type="submit"
-                        className={styles.btn}
-                        disabled={!isContinueEnabled}
-                    >
+                    <button type="submit" className={styles.btn} disabled={!isContinueEnabled}>
                         {isLoading ? "Регистрация..." : "Продолжить"}
                     </button>
                 </form>

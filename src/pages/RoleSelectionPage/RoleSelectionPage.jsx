@@ -15,7 +15,8 @@ function RoleSelectionPage() {
     
     const handleContinue = () => {
         updateRegisterData({ role: selectedRole }); 
-        navigate("/registration");
+        const nav = selectedRole == 'PARENT' ? 'registration' : 'login';
+        navigate(`/${nav}`);
     };
 
     return (
@@ -35,8 +36,8 @@ function RoleSelectionPage() {
                 <div className={styles.choiseContainer}>
                     <figure>
                         <div
-                            className={`${styles.roleCard} ${selectedRole === 'parent' ? styles.selectedCard : ''}`}
-                            onClick={() => setSelectedRole('parent')}
+                            className={`${styles.roleCard} ${selectedRole === 'PARENT' ? styles.selectedCard : ''}`}
+                            onClick={() => setSelectedRole('PARENT')}
                         >
                             <img src={parent} alt="parent-icon" />
                         </div>
@@ -44,8 +45,8 @@ function RoleSelectionPage() {
                     </figure>
                     <figure>
                         <div
-                            className={`${styles.roleCard} ${selectedRole === 'child' ? styles.selectedCard : ''}`}
-                            onClick={() => setSelectedRole('child')}
+                            className={`${styles.roleCard} ${selectedRole === 'CHILD' ? styles.selectedCard : ''}`}
+                            onClick={() => setSelectedRole('CHILD')}
                         >
                             <img src={child} alt="child-icon" />
                         </div>

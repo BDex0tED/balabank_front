@@ -9,7 +9,7 @@
 }
 
 .savingsContainer{
-    padding: 0 0  0 20px;
+    /* padding: 0 0  0 20px; */
     width: 100%;
     margin-top: 13px;
 }
@@ -248,7 +248,7 @@ input {
 .inputArea {
     position: sticky;
     bottom: 0;
-    background: white;
+    background: transparent;
     padding: 10px;
     display: flex;
     align-items: center;
@@ -264,6 +264,7 @@ input {
     border-radius: 25px;
     background-color: var(--secondary-color);
     font-size: 16px;
+    border: 1px var(--primary-color) solid;
 }
 
 .sendButton {
@@ -275,4 +276,8 @@ input {
 
 .space5{
     height: 5px;
+}
+
+.hidden{
+    display: none;
 }

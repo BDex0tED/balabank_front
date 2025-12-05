@@ -24,7 +24,7 @@ export default async function api(url, method = "GET", body = null, isJson = tru
   console.error("Ошибка 401: Токен недействителен или истек.");
   }
 
-  if (!isJson || res.status === 204) return res; // No Content
+  if (!isJson || res.status === 204) return res; 
 
   return res.json();
   } catch (error) {

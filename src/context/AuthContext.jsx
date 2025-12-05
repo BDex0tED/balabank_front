@@ -5,7 +5,6 @@ export const AuthContext = createContext();
 const STORAGE_KEY = 'userRegisterData';
 
 const getInitialRegisterData = () => {
-
     try {
         const storedData = localStorage.getItem(STORAGE_KEY);
         if (storedData) {
@@ -20,12 +19,15 @@ const getInitialRegisterData = () => {
         paternity: "",
         phone_number: "",
         age: "",
-        role: "",  
+        role: "",
     };
 };
 
 export function AuthProvider({ children }) {
 
+    // ----------------------------  
+    // 🔹 ДАННЫЕ РЕГИСТРАЦИИ
+    // ----------------------------
     const [registerData, setRegisterDataState] = useState(getInitialRegisterData);
 
     useEffect(() => {
@@ -37,16 +39,34 @@ export function AuthProvider({ children }) {
     }, [registerData]);
 
     const setRegisterData = (newData) => {
-        setRegisterDataState(newData); 
+        setRegisterDataState(newData);
     };
 
     const updateRegisterData = (newData) => {
         setRegisterDataState(prevData => ({ ...prevData, ...newData }));
     };
 
+    // ----------------------------  
+    // 🔥 ОБНОВЛЕНИЕ СЕМЬИ
+    // ----------------------------
+    const [familyUpdateKey, setFamilyUpdateKey] = useState(0);
+
+    const refreshFamily = () => {
+        setFamilyUpdateKey(prev => prev + 1);
+    };
 
     return (
-        <AuthContext.Provider value={{ registerData, setRegisterData, updateRegisterData }}>
+        <AuthContext.Provider 
+            value={{ 
+                registerData,
+                setRegisterData,
+                updateRegisterData,
+
+                // 🔥 что нужно для обновления детей
+                familyUpdateKey,
+                refreshFamily,
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );

@@ -39,9 +39,10 @@
 }
 
 .action{
+    width: max-content;
     position: absolute;
     bottom: -43px;
-    left: 13px;
+    left: -7px;
     font-size: 11px;
     display: flex;
     align-items: center;

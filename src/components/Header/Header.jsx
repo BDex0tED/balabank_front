@@ -1,12 +1,15 @@
 import React from 'react';
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import styles from './Header.module.css';
 import topUP from '../../assets/topUp.png';
 import token from '../../assets/token.png';
 import notification from '../../assets/notification.png'
 
+
 const Header = ({ userType, img, content}) => {
-    const isChild = userType === 'child';
+    const isChild = userType === 'CHILD';
+    const navigate = useNavigate();
 
     return (
         <motion.div 
@@ -27,10 +30,10 @@ const Header = ({ userType, img, content}) => {
                         <p>{content}c</p>
                     </div>
                     <div className={styles.action}>
-                        <button>
+                        <button onClick={(e) => navigate('./add-child')}>
                             <img src={topUP} alt="TopUp" loading="lazy"/>
                         </button>
-                        <p>Пополнить</p>
+                        <p>Добавить ребенка</p>
                     </div>
                 </div>
             )}
