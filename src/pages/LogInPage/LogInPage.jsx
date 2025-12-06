@@ -26,13 +26,14 @@ function LogInPage() {
         formData.append("username", cleanedPhone);
         formData.append("password", password);
 
-        const loginRes = await fetch("http://localhost:8000/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: formData.toString(),
-        }).then((r) => r.json());
+        const loginRes = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:8000"}/auth/login`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: formData.toString(),
+    }).then((r) => r.json());
+
 
         if (!loginRes.access_token) {
             setError(loginRes.detail || "Неверный телефон или пароль");
